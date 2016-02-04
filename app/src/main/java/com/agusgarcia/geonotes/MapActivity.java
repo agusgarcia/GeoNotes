@@ -17,7 +17,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -25,12 +25,23 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
                 .addApi(LocationServices.API)
                 .build();
 
+        changeFragment(new MapFragment());
+
+    }
+
+
+    private void changeFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(fragment.getTag())
+                .replace(R.id.container, fragment)
+                .commit();
     }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        
+
     }
 
     @Override

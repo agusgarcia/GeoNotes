@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def MAPBOX_ACCESS_TOKEN = "" + MapboxAccessToken ?: "Define MapboxAccessToken first in gradle.properties"
+
 android {
     compileSdkVersion 'Google Inc.:Google APIs:23'
     buildToolsVersion "23.0.2"
@@ -12,6 +14,9 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            buildConfigField "String","MAPBOX_ACCESS_TOKEN", MAPBOX_ACCESS_TOKEN
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -25,4 +30,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:3.1.0@aar') {
+        transitive = true
+    }
 }
