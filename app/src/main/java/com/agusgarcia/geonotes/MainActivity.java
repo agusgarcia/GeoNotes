@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     @Override
     public void onButtonMapClick() {
         Log.d(TAG, "Button Map Clicked");
-
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
     }
 
 }
