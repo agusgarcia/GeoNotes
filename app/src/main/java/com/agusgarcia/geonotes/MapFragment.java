@@ -50,4 +50,35 @@ public class MapFragment extends Fragment {
         return view;
     }
 
+
+    @Override
+    public void onStart() {
+        mapView.onStart();
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mapView.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
 }
