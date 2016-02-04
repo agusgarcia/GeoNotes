@@ -22,7 +22,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     protected GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private Location mCurrentLocation;
+    private MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +34,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
                 .addConnectionCallbacks(this)
                 .addApi(LocationServices.API)
                 .build();
-
-        changeFragment(new MapFragment());
 
     }
 
@@ -79,13 +77,17 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
+        mapFragment = MapActivity.newInstance(mLastLocation);
+        changeFragment(mapFragment);
+
+
         LocationRequest locationRequest;
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(1000);
         locationRequest.setFastestInterval(500);
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, mapFragment);
 
         Log.d(TAG, "OnConnection " + mLastLocation.toString());
 
@@ -98,7 +100,20 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        Log.d(TAG, "onLocationChanged" + mCurrentLocation.toString());
+
     }
+
+    public static MapFragment newInstance(Location location) {
+
+        MapFragment mapFragment = new MapFragment();
+
+        Bundle args = new Bundle();
+
+        args.putDouble("locationLat", location.getLatitude());
+        args.putDouble("locationLon", location.getLongitude());
+        mapFragment.setArguments(args);
+
+        return mapFragment;
+    }
+
 }
