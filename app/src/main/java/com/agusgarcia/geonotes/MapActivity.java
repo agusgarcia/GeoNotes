@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -22,7 +21,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     protected GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private MapFragment mapFragment;
+    private MapFragment mapFragment = new MapFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
-        mapFragment = MapActivity.newInstance(mLastLocation);
+        //mapFragment = MapActivity.newInstance(mLastLocation);
         changeFragment(mapFragment);
 
 
@@ -102,6 +101,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     public void onLocationChanged(Location location) {
 
     }
+    //Si onLocationChanged en MapFragment trouve la nouvelle position, à quoi sert de passer des arguments avec une instance ?
 
     public static MapFragment newInstance(Location location) {
 

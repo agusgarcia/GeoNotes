@@ -40,11 +40,12 @@ public class MapFragment extends Fragment implements LocationListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
+     /*   if (getArguments() != null) {
             locationLat = getArguments().getDouble("locationLat");
             locationLon = getArguments().getDouble("locationLon");
         }
         Log.d("longLat", locationLat.toString() + " " + locationLon.toString());
+    */
     }
 
     @Override
@@ -101,6 +102,24 @@ public class MapFragment extends Fragment implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        handleNewLocation(location);
         Log.d(TAG, "onLocationChanged" + mLastLocation.toString());
+    }
+
+    private void handleNewLocation(Location location) {
+
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
+
+        mapView.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("Hello World!")
+                .snippet("Im heeeeeeeeeere."));
+
+        mapView.setLatLng(latLng);
+
     }
 }
