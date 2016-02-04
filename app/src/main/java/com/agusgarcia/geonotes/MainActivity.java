@@ -1,10 +1,12 @@
 package com.agusgarcia.geonotes;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentListener {
 
     private static final String TAG = "MainActivity";
 
@@ -24,4 +26,11 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.home_container, fragment)
                 .commit();
     }
+
+    @Override
+    public void onButtonMapClick() {
+        Log.d(TAG, "Button Map Clicked");
+
+    }
+
 }

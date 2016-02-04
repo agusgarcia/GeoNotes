@@ -1,6 +1,7 @@
 package com.agusgarcia.geonotes;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.Button;
  */
 public class FirstFragment extends Fragment implements View.OnClickListener {
 
+    private FirstFragmentListener mListener;
 
     public FirstFragment() {
         // Required empty public constructor
@@ -32,7 +34,30 @@ public class FirstFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FirstFragmentListener) {
+            mListener = (FirstFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mListener != null)
+            mListener.onButtonMapClick();
+    }
+
+    public interface FirstFragmentListener {
+        void onButtonMapClick();
+    }
+
 }
