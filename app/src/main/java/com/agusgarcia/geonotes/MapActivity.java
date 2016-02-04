@@ -22,6 +22,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     protected GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private Location mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     @Override
     public void onLocationChanged(Location location) {
-
+        mCurrentLocation = location;
+        Log.d(TAG, "onLocationChanged" + mCurrentLocation.toString());
     }
 }
