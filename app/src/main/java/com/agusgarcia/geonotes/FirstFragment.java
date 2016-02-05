@@ -27,8 +27,11 @@ public class FirstFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
 
-        Button button = (Button) view.findViewById(R.id.myButton);
-        button.setOnClickListener(this);
+        Button mapButton = (Button) view.findViewById(R.id.map_button);
+        mapButton.setOnClickListener(this);
+
+        Button listButton = (Button) view.findViewById(R.id.list_button);
+        listButton.setOnClickListener(this);
 
         return view;
     }
@@ -52,12 +55,23 @@ public class FirstFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (mListener != null)
-            mListener.onButtonMapClick();
+
+        switch (v.getId()) {
+            case R.id.map_button:
+                if (mListener != null)
+                    mListener.onButtonMapClick();
+                break;
+            case R.id.list_button:
+                if (mListener != null)
+                    mListener.onButtonListClick();
+                break;
+        }
+
     }
 
     public interface FirstFragmentListener {
         void onButtonMapClick();
+        void onButtonListClick();
     }
 
 }

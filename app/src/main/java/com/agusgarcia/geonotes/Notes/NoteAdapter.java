@@ -16,8 +16,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     private static final String TAG = "NoteAdapter";
     private List<Note> mNotes = new ArrayList<>();
 
-
-    //Constructor with arguments (a list of notes)
     public NoteAdapter() {
         DataManager.loadAll(this);
     }

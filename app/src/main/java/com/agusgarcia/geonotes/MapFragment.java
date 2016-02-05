@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.agusgarcia.geonotes.Notes.DataManager;
+import com.agusgarcia.geonotes.Notes.Note;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -17,14 +19,19 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngZoom;
 import com.mapbox.mapboxsdk.views.MapView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements LocationListener {
+public class MapFragment extends Fragment implements LocationListener, DataManager.NotesListener {
 
     private static final String TAG = "MapFragment";
     MapView mapView = null;
+
+    private List<Note> mNotes = new ArrayList<>();
 
     protected Location mLastLocation;
 
@@ -51,6 +58,8 @@ public class MapFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        DataManager.loadAll(this);
 
         mapView = (MapView) view.findViewById(R.id.map_view);
 
@@ -120,4 +129,11 @@ public class MapFragment extends Fragment implements LocationListener {
         mapView.setLatLng(latLng);
 
     }
+
+    @Override
+    public void onAllNotesLoaded(List<Note> notes) {
+        mNotes = notes;
+        //notifyDataSetChanged();
+    }
+
 }

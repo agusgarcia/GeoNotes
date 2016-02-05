@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcomeText">Hello!</string>
     <string name="button_label">Click me!</string>
+    <string name="map_button_label">Go to the map</string>
+    <string name="list_button_label">Go to the list</string>
 </resources>

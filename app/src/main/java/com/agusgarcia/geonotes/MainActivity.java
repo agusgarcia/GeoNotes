@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.orm.SugarContext;
+
 public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentListener {
 
     private static final String TAG = "MainActivity";
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SugarContext.init(this);
         changeFragment(new FirstFragment());
     }
 
@@ -33,5 +36,13 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onButtonListClick() {
+        Log.d(TAG, "Button List Clicked");
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
+    }
+
 
 }

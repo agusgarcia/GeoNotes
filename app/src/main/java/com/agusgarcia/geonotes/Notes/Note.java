@@ -11,12 +11,12 @@ public class Note extends SugarRecord {
     protected String mTitle;
     protected String mDescription;
     protected Date mDate;
-    protected Location mLocation;
+    protected String mLocation;
 
     public Note() {
     }
 
-    public Note(String title, String description, Date date, Location location) {
+    public Note(String title, String description, Date date, String location) {
         mTitle = title;
         mDescription = description;
         mDate = date;
@@ -43,12 +43,12 @@ public class Note extends SugarRecord {
 
     public void setDate(Date date) { this.mDate = date; }
 
-    public Location getLocation() { return mLocation; }
+    public String getLocation() { return mLocation; }
 
-    public void setLocation(Location location) { this.mLocation = location; }
+    public void setLocation(String location) { this.mLocation = location; }
 
     @Override
     public String toString() {
-        return "Note " + "getId()" + " with title: " + mTitle;
+        return "Note " + getId() + " with title: " + mTitle;
     }
 }
