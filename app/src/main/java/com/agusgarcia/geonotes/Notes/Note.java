@@ -2,9 +2,11 @@ package com.agusgarcia.geonotes.Notes;
 
 import android.location.Location;
 
+import com.orm.SugarRecord;
+
 import java.util.Date;
 
-public class Note {
+public class Note extends SugarRecord {
 
     protected String mTitle;
     protected String mDescription;

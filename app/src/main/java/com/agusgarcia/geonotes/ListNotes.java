@@ -9,12 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.agusgarcia.geonotes.Notes.DataManager;
+import com.agusgarcia.geonotes.Notes.Note;
+import com.agusgarcia.geonotes.Notes.NoteAdapter;
+
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListNotes extends Fragment {
-
+public class ListNotes extends Fragment  {
 
     public ListNotes() {
         // Required empty public constructor
@@ -29,8 +34,9 @@ public class ListNotes extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
+        recyclerView.setAdapter(new NoteAdapter());
+
         return view;
     }
-
 
 }

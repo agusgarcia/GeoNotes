@@ -8,19 +8,45 @@ import android.widget.TextView;
 
 import com.agusgarcia.geonotes.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> implements DataManager.NotesListener {
 
     private static final String TAG = "NoteAdapter";
-    private List<Note> mNotes;
+    private List<Note> mNotes = new ArrayList<>();
 
 
     //Constructor with arguments (a list of notes)
-    public NoteAdapter(List<Note> notes) {
-        mNotes = notes;
+    public NoteAdapter() {
+        DataManager.loadAll(this);
     }
 
+    @Override
+    public void onAllNotesLoaded(List<Note> notes) {
+        mNotes = notes;
+        notifyDataSetChanged();
+    }
+
+    public class NoteViewHolder extends RecyclerView.ViewHolder {
+        private final TextView mNoteTitle;
+        private final TextView mNoteDescription;
+
+        public NoteViewHolder(View itemView) {
+            super(itemView);
+            mNoteTitle = (TextView) itemView.findViewById(R.id.note_title);
+            mNoteDescription = (TextView) itemView.findViewById(R.id.note_description);
+            //itemView.setOnClickListener(this);
+        }
+
+        public TextView getNoteTitle() {
+            return mNoteTitle;
+        }
+
+        public TextView getNoteDescription() {
+            return mNoteDescription;
+        }
+    }
 
     @Override
     public NoteAdapter.NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,23 +70,5 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         return mNotes.size();
     }
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mNoteTitle;
-        private final TextView mNoteDescription;
 
-        public NoteViewHolder(View itemView) {
-            super(itemView);
-            mNoteTitle = (TextView) itemView.findViewById(R.id.note_title);
-            mNoteDescription = (TextView) itemView.findViewById(R.id.note_description);
-            //itemView.setOnClickListener(this);
-        }
-
-        public TextView getNoteTitle() {
-            return mNoteTitle;
-        }
-
-        public TextView getNoteDescription() {
-            return mNoteDescription;
-        }
-    }
 }
