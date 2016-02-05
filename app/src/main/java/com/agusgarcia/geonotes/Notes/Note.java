@@ -1,5 +1,7 @@
 package com.agusgarcia.geonotes.Notes;
 
+import android.location.Location;
+
 import java.util.Date;
 
 public class Note {
@@ -7,14 +9,16 @@ public class Note {
     protected String mTitle;
     protected String mDescription;
     protected Date mDate;
+    protected Location mLocation;
 
     public Note() {
     }
 
-    public Note(String title, String description, Date date) {
+    public Note(String title, String description, Date date, Location location) {
         mTitle = title;
         mDescription = description;
         mDate = date;
+        mLocation = location;
     }
 
     public String getTitle() {
@@ -36,6 +40,10 @@ public class Note {
     public Date getDate() { return mDate; }
 
     public void setDate(Date date) { this.mDate = date; }
+
+    public Location getLocation() { return mLocation; }
+
+    public void setLocation(Location location) { this.mLocation = location; }
 
     @Override
     public String toString() {

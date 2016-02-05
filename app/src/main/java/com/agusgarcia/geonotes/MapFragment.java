@@ -39,12 +39,12 @@ public class MapFragment extends Fragment implements LocationListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-     /*   if (getArguments() != null) {
+        if (getArguments() != null) {
             locationLat = getArguments().getDouble("locationLat");
             locationLon = getArguments().getDouble("locationLon");
         }
         Log.d("longLat", locationLat.toString() + " " + locationLon.toString());
-    */
+
     }
 
     @Override
