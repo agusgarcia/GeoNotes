@@ -3,6 +3,7 @@ package com.agusgarcia.geonotes;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,7 +30,7 @@ import java.util.List;
 public class MapFragment extends Fragment implements LocationListener, DataManager.NotesListener {
 
     private static final String TAG = "MapFragment";
-    MapView mapView = null;
+    MapView mapView;
 
     private List<Note> mNotes = new ArrayList<>();
 
@@ -50,6 +51,7 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             locationLat = getArguments().getDouble("locationLat");
             locationLon = getArguments().getDouble("locationLon");
         }
+
         Log.d("longLat", locationLat.toString() + " " + locationLon.toString());
 
     }
@@ -67,11 +69,13 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
 
         mapView.setStyleUrl(Style.MAPBOX_STREETS);
 
-        mapView.setLatLng(new LatLngZoom(2.13726, 11.57603, 5));
+        if (mLastLocation != null) {
+            locationLat = mLastLocation.getLatitude();
+            locationLon = mLastLocation.getLongitude();
+        }
+        mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
 
         mapView.onCreate(savedInstanceState);
-
-        Log.d("onCreateMapFragment", "here");
 
         return view;
     }
@@ -79,39 +83,48 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
 
     @Override
     public void onStart() {
-        mapView.onStart();
         super.onStart();
+        mapView.onStart();
     }
 
     @Override
     public void onResume() {
-        mapView.onResume();
         super.onResume();
+        mapView.onResume();
     }
 
     @Override
     public void onPause() {
-        mapView.onPause();
         super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mapView.onDestroy();
         super.onDestroy();
+        mapView.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        mapView.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onLocationChanged(Location location) {
+
         mLastLocation = location;
-        handleNewLocation(location);
         Log.d(TAG, "onLocationChanged" + mLastLocation.toString());
+
+        handleNewLocation(location);
+
     }
 
     private void handleNewLocation(Location location) {
@@ -123,8 +136,8 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
 
         mapView.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("Hello World!")
-                .snippet("Im heeeeeeeeeere."));
+                .title("Hello World! :)")
+                .snippet("I'm here!"));
 
         mapView.setLatLng(latLng);
 

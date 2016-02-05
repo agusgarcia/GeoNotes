@@ -10,13 +10,13 @@ public class Note extends SugarRecord {
 
     protected String mTitle;
     protected String mDescription;
-    protected Date mDate;
+    protected String mDate;
     protected String mLocation;
 
     public Note() {
     }
 
-    public Note(String title, String description, Date date, String location) {
+    public Note(String title, String description, String date, String location) {
         mTitle = title;
         mDescription = description;
         mDate = date;
@@ -39,9 +39,9 @@ public class Note extends SugarRecord {
         this.mDescription = description;
     }
 
-    public Date getDate() { return mDate; }
+    public String getDate() { return mDate; }
 
-    public void setDate(Date date) { this.mDate = date; }
+    public void setDate(String date) { this.mDate = date; }
 
     public String getLocation() { return mLocation; }
 

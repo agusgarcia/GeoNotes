@@ -39,9 +39,16 @@ public class ListNotes extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        recyclerView.setAdapter(new NoteAdapter());
+        Note note;
+
+        for (int i = 0; i < 1; i++) {
+            note = new Note("Title: " + i, "Description..........", "Date", "Location");
+            note.save();
+        }
 
         //notes.add(new Note("Ttl", "Desc", Calendar.getInstance().getTime(), "location"));
+
+        recyclerView.setAdapter(new NoteAdapter());
 
         return view;
     }

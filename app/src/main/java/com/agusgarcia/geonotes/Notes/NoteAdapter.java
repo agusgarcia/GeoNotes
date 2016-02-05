@@ -26,6 +26,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         notifyDataSetChanged();
     }
 
+    public void add(Note note) {
+        mNotes.add(note);
+        notifyDataSetChanged();
+
+    }
+
     public class NoteViewHolder extends RecyclerView.ViewHolder {
         private final TextView mNoteTitle;
         private final TextView mNoteDescription;

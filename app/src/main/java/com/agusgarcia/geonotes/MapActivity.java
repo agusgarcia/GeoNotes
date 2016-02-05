@@ -40,7 +40,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     private void changeFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .addToBackStack(fragment.getTag())
                 .replace(R.id.container, fragment)
                 .commit();
     }
@@ -53,9 +52,23 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+    @Override
     protected void onStop() {
         if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mapFragment);
             mGoogleApiClient.disconnect();
         }
         super.onStop();
@@ -78,8 +91,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
         }
 
         mapFragment = MapActivity.newInstance(mLastLocation);
-        changeFragment(mapFragment);
 
+        changeFragment(mapFragment);
 
         LocationRequest locationRequest;
         locationRequest = new LocationRequest();
