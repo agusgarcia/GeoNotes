@@ -22,12 +22,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListNotes extends Fragment {
+public class ListFragment extends Fragment {
 
     NoteAdapter mNoteAdapter;
     List<Note> notes;
 
-    public ListNotes() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
