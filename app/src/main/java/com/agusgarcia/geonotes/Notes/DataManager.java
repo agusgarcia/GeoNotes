@@ -19,13 +19,11 @@ public class DataManager {
                 notes = Note.listAll(Note.class);
                 return null;
             }
-
             @Override
             protected void onPostExecute(Void aVoid) {
                 mListener.onAllNotesLoaded(notes);
             }
         }
-
         new NotesAsyncTask().execute();
     }
 }

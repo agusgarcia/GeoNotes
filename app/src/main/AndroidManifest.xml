@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".MapActivity" />
         <activity android:name=".ListActivity" />
+
         <meta-data
             android:name="DATABASE"
             android:value="notes.db" />
@@ -34,6 +35,7 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.agusgarcia" />
 
+        <activity android:name=".NewNoteActivity"></activity>
     </application>
 
 </manifest>

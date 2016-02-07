@@ -1,6 +1,7 @@
 package com.agusgarcia.geonotes.Notes;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public void add(Note note) {
         mNotes.add(note);
+        Log.d("NoteAdapter", "add note");
         notifyDataSetChanged();
-
     }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {

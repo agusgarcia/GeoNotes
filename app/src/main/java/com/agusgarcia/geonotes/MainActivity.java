@@ -1,5 +1,6 @@
 package com.agusgarcia.geonotes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +34,13 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar;
+
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -57,12 +61,14 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                Context context = view.getContext();
+                context.startActivity(new Intent(context, NewNoteActivity.class));
+                //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+               //         .setAction("Action", null).show();
             }
         });
     }
-
 
 
     @Override
@@ -112,5 +118,9 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         startActivity(intent);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
 }
