@@ -68,6 +68,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     @Override
     protected void onStop() {
         if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mapFragment);
             mGoogleApiClient.disconnect();
         }
@@ -84,6 +85,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (mLastLocation == null) {
@@ -97,8 +99,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
         LocationRequest locationRequest;
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, mapFragment);
 

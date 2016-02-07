@@ -4,6 +4,7 @@ package com.agusgarcia.geonotes;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -38,6 +39,8 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
 
     protected Double locationLat;
     protected Double locationLon;
+
+    boolean markerSet = false;
 
     public MapFragment() {
         // Required empty public constructor
@@ -74,6 +77,33 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             locationLon = mLastLocation.getLongitude();
         }
         mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
+
+        mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                String latLngS = latLng.toString();
+                Log.d(TAG, latLngS);
+                Log.d(TAG, NewNoteActivity.title);
+
+                if (!markerSet) {
+                    mapView.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(NewNoteActivity.title)
+                            .snippet("I'm here!"));
+
+                    Note note;
+                    note = new Note(
+                            "Title: " + NewNoteActivity.title,
+                            "Description: " + NewNoteActivity.description,
+                            "Date",
+                            latLng.toString());
+                    note.save();
+
+                    markerSet = true;
+                }
+
+            }
+        });
 
         mapView.onCreate(savedInstanceState);
 
@@ -146,6 +176,14 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
     @Override
     public void onAllNotesLoaded(List<Note> notes) {
         mNotes = notes;
+
+        for (Note note : mNotes) {
+            String title = note.getTitle();
+            Log.d("the titles", title);
+
+
+        }
+
         //notifyDataSetChanged();
     }
 

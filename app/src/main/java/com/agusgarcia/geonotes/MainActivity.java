@@ -118,9 +118,4 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         startActivity(intent);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-    }
 }
