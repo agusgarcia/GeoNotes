@@ -181,7 +181,7 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             String title = note.getTitle();
             Log.d("the titles", title);
 
-
+            //get each note and add the marker
         }
 
         //notifyDataSetChanged();

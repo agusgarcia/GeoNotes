@@ -16,6 +16,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     private static final String TAG = "NoteAdapter";
     private List<Note> mNotes = new ArrayList<>();
+    private static NoteClickListener mListener;
 
     public NoteAdapter() {
         DataManager.loadAll(this);
@@ -26,14 +27,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         mNotes = notes;
         notifyDataSetChanged();
     }
-
+/*
     public void add(Note note) {
         mNotes.add(note);
         Log.d("NoteAdapter", "add note");
         notifyDataSetChanged();
-    }
+    } */
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder {
+    public static class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView mNoteTitle;
         private final TextView mNoteDescription;
 
@@ -41,7 +42,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             super(itemView);
             mNoteTitle = (TextView) itemView.findViewById(R.id.note_title);
             mNoteDescription = (TextView) itemView.findViewById(R.id.note_description);
-            //itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         public TextView getNoteTitle() {
@@ -50,6 +51,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
         public TextView getNoteDescription() {
             return mNoteDescription;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "on click: " + v);
+            if (mListener == null) {
+                return;
+            }
+            mListener.onClick(getAdapterPosition(), v);
         }
     }
 
@@ -75,5 +85,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         return mNotes.size();
     }
 
+
+    public void setNoteClickListener(NoteClickListener listener) {
+        mListener = listener;
+    }
+
+    public interface NoteClickListener {
+        void onClick(int position, View v);
+    }
 
 }
