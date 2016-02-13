@@ -1,6 +1,7 @@
 package com.agusgarcia.geonotes;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -139,4 +140,11 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent mainIntent = new Intent(MapActivity.this, MainActivity.class);
+        MapActivity.this.startActivity(mainIntent);
+    }
+
 }

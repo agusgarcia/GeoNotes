@@ -82,7 +82,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
                         android:onClick="createNote"
-                        android:text="@string/button_send" />
+                        android:text="@string/button_send"
+                        style="?attr/borderlessButtonStyle"/>
 
                 </LinearLayout>
 
