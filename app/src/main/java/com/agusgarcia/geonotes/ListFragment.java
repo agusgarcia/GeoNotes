@@ -5,6 +5,7 @@ import android.location.Location;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,15 +28,15 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements DataManager.NotesListener {
 
     private static final String TAG = "ListFragment";
     NoteAdapter mNoteAdapter;
-    List<Note> notes;
+    List<Note> mNotes;
     RecyclerView recyclerView;
 
     public ListFragment() {
-        // Required empty public constructor
+        DataManager.loadAll(this);
     }
 
     @Override
@@ -47,22 +48,51 @@ public class ListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         mNoteAdapter = new NoteAdapter();
+        recyclerView.setAdapter(mNoteAdapter);
 
         mNoteAdapter.setNoteClickListener(new NoteAdapter.NoteClickListener() {
             @Override
             public void onClick(int position, View v) {
-                Log.d(TAG, "clicked");
+                Log.d(TAG, "clicked pos :" + position);
             }
         });
 
+        mNoteAdapter.setNoteAddListener(new NoteAdapter.NoteAddListener() {
 
-        updateView();
+            @Override
+            public void addNoteHandler(Note note) {
+                Log.d(TAG, "mNotes size 1" + mNotes.size());
+                Log.d(TAG, "mNotes size 2" + mNotes.size());
+                mNotes.add(note);
+
+                //PAS COMME çA !
+                mNoteAdapter.mNotes = mNotes;
+
+                mNoteAdapter.notifyItemInserted(mNoteAdapter.getItemCount() - 1);
+                // recyclerView.setAdapter(mNoteAdapter);
+            }
+        });
+
+        mNoteAdapter.setNoteDeleteClickListener(new NoteAdapter.NoteDeleteClickListener() {
+
+            @Override
+            public void deleteNoteOnClickHandler(int position) {
+                // Note note = mNotes.
+                Note note = mNotes.get(position);
+                Long noteId = note.getId();
+                Note noteToDelete = Note.findById(Note.class, noteId);
+                Log.d(TAG, "click on position " + position);
+                Log.d(TAG, "click on id " + noteId);
+                Log.d(TAG, "click on " + note);
+                mNoteAdapter.delete(noteToDelete);
+
+                mNotes.remove(position);
+            }
+        });
 
         //Note note;
-
         // note = new Note("Title: " + "title", "Description..........", "Date", "Location");
         // note.save();
-
         //notes.add(new Note("Ttl", "Desc", Calendar.getInstance().getTime(), "location"));
 
         Log.d(TAG, "here");
@@ -70,7 +100,14 @@ public class ListFragment extends Fragment {
     }
 
     public void updateView() {
-        recyclerView.setAdapter(new NoteAdapter());
+
+        DataManager.loadAll(this);
+
+        //mNoteAdapter.updateViewNA();
+
+        Log.d(TAG, "dataManager called");
+
+        //recyclerView.setAdapter(mNoteAdapter);
     }
 
 
@@ -79,5 +116,12 @@ public class ListFragment extends Fragment {
         super.onResume();
         updateView();
         Log.d(TAG, "onResume");
+    }
+
+    @Override
+    public void onAllNotesLoaded(List<Note> notes) {
+        Log.d(TAG, "on all notes");
+        mNotes = notes;
+        mNoteAdapter.notifyDataSetChanged();
     }
 }

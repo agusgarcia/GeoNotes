@@ -1,26 +1,27 @@
 package com.agusgarcia.geonotes.Notes;
 
-import android.location.Location;
-
 import com.orm.SugarRecord;
 
-import java.util.Date;
+import java.lang.reflect.Array;
 
 public class Note extends SugarRecord {
 
     protected String mTitle;
     protected String mDescription;
     protected String mDate;
-    protected String mLocation;
+    protected Double mLat;
+    protected Double mLng;
+
 
     public Note() {
     }
 
-    public Note(String title, String description, String date, String location) {
+    public Note(String title, String description, String date, Double lat, Double lng) {
         mTitle = title;
         mDescription = description;
         mDate = date;
-        mLocation = location;
+        mLat = lat;
+        mLng = lng;
     }
 
     public String getTitle() {
@@ -43,9 +44,15 @@ public class Note extends SugarRecord {
 
     public void setDate(String date) { this.mDate = date; }
 
-    public String getLocation() { return mLocation; }
+    public Double getLat() { return mLat; }
 
-    public void setLocation(String location) { this.mLocation = location; }
+    public void setLat(Double lat) { this.mLat = lat; }
+
+    public Double getLng() { return mLng; }
+
+    public void setLng(Double lng) { this.mLng = lng; }
+
+    public long getNoteId() { return getId(); }
 
     @Override
     public String toString() {

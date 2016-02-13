@@ -1,25 +1,17 @@
 
 package com.agusgarcia.geonotes;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Debug;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.agusgarcia.geonotes.Notes.DataManager;
 import com.agusgarcia.geonotes.Notes.Note;
 import com.agusgarcia.geonotes.Notes.NoteAdapter;
-import com.google.android.gms.location.internal.LocationRequestUpdateData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +22,8 @@ public class NewNoteActivity extends AppCompatActivity {
     NoteAdapter mNoteAdapter;
     public static String title;
     public static String description;
+    public static boolean isMapClickable = false;
+    public static boolean addNewMarker = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +68,21 @@ public class NewNoteActivity extends AppCompatActivity {
                         switch (which) {
                             case 0:
                                 Log.d("case", "On the map");
-                                Intent intent = new Intent(NewNoteActivity.this, MapActivity.class);
-                                NewNoteActivity.this.startActivity(intent);
+                                Log.d("newM4", Boolean.toString(addNewMarker));
+                                isMapClickable = true;
+                                addNewMarker = true;
+                                Log.d("newM3", Boolean.toString(addNewMarker));
+                                Intent mapIntent = new Intent(NewNoteActivity.this, MapActivity.class);
+                                NewNoteActivity.this.startActivity(mapIntent);
+
 
                                 break;
                             case 1:
                                 Log.d("case", "Current location");
+                                isMapClickable = false;
+                                addNewMarker = true;
+                                Intent locIntent = new Intent(NewNoteActivity.this, MapActivity.class);
+                                NewNoteActivity.this.startActivity(locIntent);
                                 break;
                         }
 

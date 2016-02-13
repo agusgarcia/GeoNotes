@@ -6,7 +6,7 @@
             android:id="@+id/navigation_item_attachment"
             android:checked="true"
             android:icon="@drawable/ic_attachment"
-            android:title="@string/nav_item_attachment" />
+            android:title="List of notes" />
         <item
             android:id="@+id/navigation_item_images"
             android:icon="@drawable/ic_image"
@@ -14,14 +14,14 @@
         <item
             android:id="@+id/navigation_item_location"
             android:icon="@drawable/ic_place"
-            android:title="@string/nav_item_location" />
+            android:title="Notes on the map" />
     </group>
 
     <item android:title="@string/nav_sub_menu">
         <menu>
             <item
                 android:icon="@drawable/ic_emoticon"
-                android:title="@string/nav_sub_menu_item01" />
+                android:title="Add new note" />
             <item
                 android:icon="@drawable/ic_emoticon"
                 android:title="@string/nav_sub_menu_item02" />

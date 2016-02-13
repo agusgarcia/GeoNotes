@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.agusgarcia.geonotes.Notes.Note;
 import com.orm.SugarContext;
 
 public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentListener {
@@ -52,6 +53,16 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
                 Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.navigation_item_location:
+                        Log.d("TAG", "Map");
+                        onButtonMapClick();
+                        return true;
+                }
+
                 return true;
             }
         });

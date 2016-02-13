@@ -6,9 +6,12 @@ import java.util.List;
 
 public class DataManager {
 
+    private static DataManager sInstance;
+
     public interface NotesListener {
         void onAllNotesLoaded(List<Note> notes);
     }
+
 
     public static void loadAll(final NotesListener mListener) {
         class NotesAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -26,4 +29,7 @@ public class DataManager {
         }
         new NotesAsyncTask().execute();
     }
+
+
+
 }

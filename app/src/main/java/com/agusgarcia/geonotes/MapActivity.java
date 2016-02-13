@@ -25,6 +25,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     private Location mLastLocation;
     private MapFragment mapFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +127,9 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
         args.putDouble("locationLat", location.getLatitude());
         args.putDouble("locationLon", location.getLongitude());
+        args.putBoolean("clickableMap", NewNoteActivity.isMapClickable);
+        args.putBoolean("newMarker", NewNoteActivity.addNewMarker);
+        NewNoteActivity.addNewMarker = false;
         mapFragment.setArguments(args);
 
         return mapFragment;
