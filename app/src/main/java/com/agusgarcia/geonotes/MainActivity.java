@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+               // Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
 
                 int id = menuItem.getItemId();
 

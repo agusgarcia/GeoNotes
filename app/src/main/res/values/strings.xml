@@ -22,4 +22,7 @@
     <string name="button_send">Send</string>
     <string name="delete">Delete</string>
     <string name="see_on_map">See on map</string>
+    <string name="list_of_notes">List of notes</string>
+    <string name="notes_on_the_map">Notes on the map</string>
+    <string name="add_new_note">Add new note</string>
 </resources>
