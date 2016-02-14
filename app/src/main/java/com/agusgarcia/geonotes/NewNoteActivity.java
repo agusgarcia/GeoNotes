@@ -2,6 +2,7 @@
 package com.agusgarcia.geonotes;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.agusgarcia.geonotes.Notes.Note;
 import com.agusgarcia.geonotes.Notes.NoteAdapter;
@@ -18,8 +20,6 @@ import java.util.List;
 
 public class NewNoteActivity extends AppCompatActivity {
 
-    private List<Note> mNotes = new ArrayList<>();
-    NoteAdapter mNoteAdapter;
     public static String title;
     public static String description;
     public static boolean isMapClickable = false;
@@ -32,7 +32,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("New note");
+        toolbar.setTitle("Add new note");
 
     }
 
@@ -46,6 +46,9 @@ public class NewNoteActivity extends AppCompatActivity {
 
         if (MapFragment.isMapLongClickable) {
             launchMapActivity();
+
+            //If we have made a long click, the position is already set
+            //So we don't show the chooseLocation dialog
             return;
         }
 
@@ -54,6 +57,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
     private void chooseLocation() {
 
+        //Show a dialog to choose the location of the new note
         new MaterialDialog.Builder(this)
                 .title("Choose location")
                 .items("On the map", "Current location")
@@ -63,16 +67,12 @@ public class NewNoteActivity extends AppCompatActivity {
 
                         switch (which) {
                             case 0:
-                                Log.d("case", "On the map");
-                                Log.d("newM4", Boolean.toString(addNewMarker));
                                 isMapClickable = true;
                                 addNewMarker = true;
-                                Log.d("newM3", Boolean.toString(addNewMarker));
                                 launchMapActivity();
 
                                 break;
                             case 1:
-                                Log.d("case", "Current location");
                                 isMapClickable = false;
                                 addNewMarker = true;
                                 launchMapActivity();

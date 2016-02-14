@@ -13,6 +13,7 @@ public class SplashActivity extends AppCompatActivity {
         Thread timerThread = new Thread(){
             public void run(){
                 try{
+                    //Show splash screen for 3s
                     sleep(3000);
                 }catch(InterruptedException e){
                     e.printStackTrace();

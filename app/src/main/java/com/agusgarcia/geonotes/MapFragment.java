@@ -43,29 +43,32 @@ import java.util.Locale;
 public class MapFragment extends Fragment implements LocationListener, DataManager.NotesListener {
 
     private static final String TAG = "MapFragment";
+
     protected MapView mapView;
+
+    protected NoteAdapter mNoteAdapter;
     private List<Note> mNotes = new ArrayList<>();
     protected Location mLastLocation = new Location("");
     protected Double locationLat;
     protected Double locationLon;
+
     protected boolean isMapClickable;
+    protected boolean markerSet = false;
+
     protected static boolean isMapLongClickable = false;
     protected static LatLng longClickLocation;
-    protected boolean addNewMarker;
-    protected LatLng seeNotePos = ListFragment.seeNotePos;
-    boolean markerSet = false;
-    public String city;
-    protected Marker currentPositionMarker;
-    protected NoteAdapter mNoteAdapter;
+    protected boolean addNewMarker = false;
 
+    protected LatLng seeNotePos = ListFragment.seeNotePos;
+    public String city;
+
+    protected Marker currentPositionMarker;
 
     protected static boolean seeCurrentLocation;
     protected static boolean seeLongClickLocation;
     protected static boolean seeNoteLocation;
 
-
     public MapFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -84,8 +87,6 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
         mLastLocation.setLatitude(locationLat);
         mLastLocation.setLongitude(locationLon);
 
-        Log.d("longLat", locationLat + " " + locationLon);
-
     }
 
     @Override
@@ -93,7 +94,7 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mNoteAdapter = new NoteAdapter();
+        mNoteAdapter = new NoteAdapter(mNotes);
 
         mapView = (MapView) view.findViewById(R.id.map_view);
 
@@ -113,16 +114,14 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
         mapView.setOnMapLongClickListener(new MapView.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull LatLng location) {
-                Log.d(TAG, "long click");
+
                 isMapLongClickable = true;
                 seeLongClickLocation = true;
 
                 longClickLocation = location;
-                Log.d("Location", longClickLocation.toString());
 
                 Intent intent = new Intent(getActivity(), NewNoteActivity.class);
                 startActivity(intent);
-
             }
         });
 
@@ -139,34 +138,39 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
     }
 
     private void addMarker() {
-
+        //If map is clickable and we haven't added a marker yet, set click listener
         if (isMapClickable && !markerSet) {
             mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
                 @Override
                 public void onMapClick(@NonNull LatLng latLng) {
-                    if (!markerSet) {
-                        addNewMarker(latLng);
-                    }
+                    addNewMarker(latLng);
                 }
             });
         } else if (isMapLongClickable) {
-
+            //If we have made a long click...
             if (longClickLocation == null) {
                 return;
             }
+            // ..and long click location is not null
+            //We add a new marker
+
             addNewMarker(longClickLocation);
             isMapLongClickable = false;
 
         } else {
+            //If click listener is not enabled and we haven't made a long click
+            //We add a marker on current (last detected) position
+
             LatLng mLastLocationLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             addNewMarker(mLastLocationLatLng);
         }
     }
 
     private void addNewMarker(LatLng location) {
-
+        //Get the current date
         final String date = new SimpleDateFormat("EEE, dd MMM yyyy").format(new Date());
 
+        //Get the city of the location
         Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses = null;
         try {
@@ -180,11 +184,13 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
 
         LatLng latLngLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
+        //Add the new marker on the map
         mapView.addMarker(new MarkerOptions()
                 .position(latLngLocation)
                 .title(NewNoteActivity.title)
                 .snippet(NewNoteActivity.description + System.getProperty("line.separator") + date));
 
+        //Create de note
         Note note = new Note(
                 NewNoteActivity.title,
                 NewNoteActivity.description,
@@ -198,12 +204,15 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             Snackbar.make(getView(), "Your note has been added.", Snackbar.LENGTH_SHORT).show();
         }
 
+        note.save();
+
         mNoteAdapter.add(note);
+
         markerSet = true;
     }
 
     private void handleNewLocation(Location location) {
-
+        //On position changes, update the marker position
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
@@ -224,15 +233,18 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
     }
 
     public void setPosition() {
-
+        //If we have clicked on "see note on the map"
+        // we center the view on the marker of the note
         if (seeNoteLocation) {
             mapView.setLatLng(new LatLngZoom(seeNotePos, 7));
             Log.d(TAG, "seeNoteLocation");
         } else if (seeLongClickLocation) {
+            //if we have long clicked, we set the position of the map
+            // on the position of the new note
             mapView.setLatLng(new LatLngZoom(longClickLocation, 7));
             Log.d(TAG, "seeLongClickLocation");
         } else {
-            //current location
+            //otherwise, we set the view on current position
             mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
             Log.d(TAG, "else");
         }
@@ -245,6 +257,7 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
     @Override
     public void onAllNotesLoaded(List<Note> notes) {
 
+        //load all notes and markers
         mNotes = notes;
 
         for (Note note : mNotes) {
@@ -272,8 +285,6 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
     public void onResume() {
         super.onResume();
         mapView.onResume();
-        Log.d("onResume", locationLat + " " + locationLon);
-
         setPosition();
     }
 

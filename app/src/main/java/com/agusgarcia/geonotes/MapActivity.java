@@ -2,7 +2,6 @@ package com.agusgarcia.geonotes;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,13 +12,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,9 +30,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     private static final String TAG = "Map Activity";
 
     protected GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private MapFragment mapFragment;
-    private final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +90,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
+        //Check if GPS is enabled and Internet connection available
         LocationManager mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         ConnectivityManager mNetworkManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -157,14 +151,14 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
                     .show();
         }
 
-
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        //Get current location
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (mLastLocation == null) {
             return;
         }
 
-        mapFragment = MapActivity.newInstance(mLastLocation);
+        MapFragment mapFragment = MapActivity.newInstance(mLastLocation);
 
         changeFragment(mapFragment);
 
@@ -190,7 +184,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     }
 
     public static MapFragment newInstance(Location location) {
-
+        //Create a new instance of MapFragment with some arguments
         MapFragment mapFragment = new MapFragment();
 
         Bundle args = new Bundle();
@@ -212,6 +206,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
     @Override
     public void onBackPressed() {
+        //On back button pressed, go to the MainActivity
+        //(Not to newNoteActivity)
         Intent mainIntent = new Intent(MapActivity.this, MainActivity.class);
         MapActivity.this.startActivity(mainIntent);
     }

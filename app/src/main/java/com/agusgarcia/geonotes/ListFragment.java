@@ -45,48 +45,21 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
         recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        mNoteAdapter = new NoteAdapter();
+        mNoteAdapter = new NoteAdapter(mNotes);
         recyclerView.setAdapter(mNoteAdapter);
-
-        mNoteAdapter.setNoteClickListener(new NoteAdapter.NoteClickListener() {
-            @Override
-            public void onClick(int position, View v) {
-                Log.d(TAG, "clicked pos :" + position);
-            }
-        });
-
-        mNoteAdapter.setNoteAddListener(new NoteAdapter.NoteAddListener() {
-
-            @Override
-            public void addNoteHandler(Note note) {
-                Log.d(TAG, "mNotes size 1" + mNotes.size());
-                Log.d(TAG, "mNotes size 2" + mNotes.size());
-                mNotes.add(note);
-
-                //PAS COMME çA !
-                mNoteAdapter.mNotes = mNotes;
-
-                mNoteAdapter.notifyItemInserted(mNoteAdapter.getItemCount() - 1);
-                // recyclerView.setAdapter(mNoteAdapter);
-            }
-        });
 
         mNoteAdapter.setNoteDeleteClickListener(new NoteAdapter.NoteDeleteClickListener() {
 
             @Override
             public void deleteNoteOnClickHandler(int position) {
 
-                Log.d(TAG, "delete note");
-
                 Note note = mNotes.get(position);
                 Long noteId = note.getId();
                 Note noteToDelete = Note.findById(Note.class, noteId);
-                Log.d(TAG, "click on position " + position);
-                Log.d(TAG, "click on id " + noteId);
-                Log.d(TAG, "click on " + note);
-                mNoteAdapter.delete(noteToDelete);
 
+                mNoteAdapter.delete(noteToDelete);
                 mNotes.remove(position);
+
                 Snackbar.make(getView(), "Your note has been deleted.", Snackbar.LENGTH_SHORT).show();
 
             }
@@ -94,17 +67,12 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
 
         mNoteAdapter.setNoteSeeListener(new NoteAdapter.NoteSeeListener() {
 
-
             @Override
             public void seeNoteHandler(int position) {
 
-                Log.d(TAG, "see note");
                 Note note = mNotes.get(position);
                 Long noteId = note.getId();
                 Note noteToSee = Note.findById(Note.class, noteId);
-                Log.d(TAG, "click on position " + position);
-                Log.d(TAG, "click on id " + noteId);
-                Log.d(TAG, "click on " + note);
 
                 MapFragment.seeNoteLocation = true;
                 seeNote = true;
@@ -115,16 +83,11 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
             }
         });
 
-        Log.d(TAG, "here");
         return view;
     }
 
     public void updateView() {
-
         DataManager.loadAll(this);
-        Log.d(TAG, "dataManager called");
-
-        //recyclerView.setAdapter(mNoteAdapter);
     }
 
 
@@ -132,12 +95,10 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
     public void onResume() {
         super.onResume();
         updateView();
-        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onAllNotesLoaded(List<Note> notes) {
-        Log.d(TAG, "on all notes");
         mNotes = notes;
         mNoteAdapter.notifyDataSetChanged();
     }

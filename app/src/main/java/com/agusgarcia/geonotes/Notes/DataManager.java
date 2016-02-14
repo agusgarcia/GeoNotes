@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DataManager {
 
-    private static DataManager sInstance;
+
 
     public interface NotesListener {
         void onAllNotesLoaded(List<Note> notes);
