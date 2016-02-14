@@ -3,29 +3,20 @@ package com.agusgarcia.geonotes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.agusgarcia.geonotes.Notes.DataManager;
 import com.agusgarcia.geonotes.Notes.Note;
 import com.agusgarcia.geonotes.Notes.NoteAdapter;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -96,6 +87,8 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
                 mNoteAdapter.delete(noteToDelete);
 
                 mNotes.remove(position);
+                Snackbar.make(getView(), "Your note has been deleted.", Snackbar.LENGTH_SHORT).show();
+
             }
         });
 
@@ -113,6 +106,7 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
                 Log.d(TAG, "click on id " + noteId);
                 Log.d(TAG, "click on " + note);
 
+                MapFragment.seeNoteLocation = true;
                 seeNote = true;
                 seeNotePos = new LatLng(noteToSee.getLat(), noteToSee.getLng());
 
@@ -121,11 +115,6 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
             }
         });
 
-        //Note note;
-        // note = new Note("Title: " + "title", "Description..........", "Date", "Location");
-        // note.save();
-        //notes.add(new Note("Ttl", "Desc", Calendar.getInstance().getTime(), "location"));
-
         Log.d(TAG, "here");
         return view;
     }
@@ -133,9 +122,6 @@ public class ListFragment extends Fragment implements DataManager.NotesListener 
     public void updateView() {
 
         DataManager.loadAll(this);
-
-        //mNoteAdapter.updateViewNA();
-
         Log.d(TAG, "dataManager called");
 
         //recyclerView.setAdapter(mNoteAdapter);

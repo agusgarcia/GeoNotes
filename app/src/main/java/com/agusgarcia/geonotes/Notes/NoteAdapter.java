@@ -1,29 +1,18 @@
 package com.agusgarcia.geonotes.Notes;
 
-import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.v4.view.GravityCompat;
+
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.agusgarcia.geonotes.ListFragment;
-import com.agusgarcia.geonotes.MainActivity;
-import com.agusgarcia.geonotes.MapActivity;
-import com.agusgarcia.geonotes.MapFragment;
 import com.agusgarcia.geonotes.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> implements DataManager.NotesListener {
 
@@ -42,11 +31,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @Override
     public void onAllNotesLoaded(List<Note> notes) {
         mNotes = notes;
-
-        for (final Note note : notes) {
-            Log.d(TAG, note.toString());
-        }
-
         notifyDataSetChanged();
         Log.d(TAG, "onAllNotesLoaded");
     }
@@ -96,7 +80,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             mButtonSee.setOnClickListener(this);
 
             itemView.setOnClickListener(this);
-//            itemView.setOnCreateContextMenuListener(this);
         }
 
 
@@ -139,24 +122,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                     return;
             }
         }
-
-      /*  @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-            MenuItem myActionItem = menu.add("Some menu item");
-            myActionItem.setOnMenuItemClickListener(this);
-
-            menu.setHeaderTitle("Select The Action");
-            menu.add(0, v.getId(), 0, "Call");//groupId, itemId, order, title
-            menu.add(0, v.getId(), 0, "SMS");
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            // Menu Item Clicked!
-            Log.d("TAG", "menu item clicked");
-            return true;
-        }*/
     }
 
     @Override

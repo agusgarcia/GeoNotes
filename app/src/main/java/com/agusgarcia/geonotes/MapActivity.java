@@ -87,7 +87,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
-
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (mLastLocation == null) {

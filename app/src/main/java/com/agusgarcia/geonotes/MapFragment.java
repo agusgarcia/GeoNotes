@@ -1,6 +1,6 @@
 package com.agusgarcia.geonotes;
 
-
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -31,7 +32,6 @@ import com.mapbox.mapboxsdk.views.MapView;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,29 +43,26 @@ import java.util.Locale;
 public class MapFragment extends Fragment implements LocationListener, DataManager.NotesListener {
 
     private static final String TAG = "MapFragment";
-    MapView mapView;
-
+    protected MapView mapView;
     private List<Note> mNotes = new ArrayList<>();
-
     protected Location mLastLocation = new Location("");
-
     protected Double locationLat;
     protected Double locationLon;
-
     protected boolean isMapClickable;
+    protected static boolean isMapLongClickable = false;
+    protected static LatLng longClickLocation;
     protected boolean addNewMarker;
-
-    protected boolean seeNote = ListFragment.seeNote;
     protected LatLng seeNotePos = ListFragment.seeNotePos;
-
     boolean markerSet = false;
-
     public String city;
+    protected Marker currentPositionMarker;
+    protected NoteAdapter mNoteAdapter;
 
-    Marker currentPositionMarker;
 
+    protected static boolean seeCurrentLocation;
+    protected static boolean seeLongClickLocation;
+    protected static boolean seeNoteLocation;
 
-    NoteAdapter mNoteAdapter;
 
     public MapFragment() {
         // Required empty public constructor
@@ -103,30 +100,164 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
         mapView.setAccessToken(BuildConfig.MAPBOX_ACCESS_TOKEN);
 
         mapView.setStyleUrl(Style.MAPBOX_STREETS);
-        /*
-        if (mLastLocation != null) {
-            locationLat = mLastLocation.getLatitude();
-            locationLon = mLastLocation.getLongitude();
-        }
-        */
-        mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
+
         if (addNewMarker) {
+            markerSet = false;
+            addMarker();
+        }
+        if (isMapLongClickable) {
+            markerSet = true;
             addMarker();
         }
 
-        if (seeNote) {
-            Log.d(TAG, "see note true");
-            Log.d(TAG, "see note" + seeNotePos);
-            mapView.setLatLng(seeNotePos);
-            ListFragment.seeNote = false;
+        mapView.setOnMapLongClickListener(new MapView.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(@NonNull LatLng location) {
+                Log.d(TAG, "long click");
+                isMapLongClickable = true;
+                seeLongClickLocation = true;
 
-        } else {
-            Log.d(TAG, "see note false");
-        }
+                longClickLocation = location;
+                Log.d("Location", longClickLocation.toString());
+
+                Intent intent = new Intent(getActivity(), NewNoteActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
         mapView.onCreate(savedInstanceState);
 
         return view;
     }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        handleNewLocation(location);
+    }
+
+    private void addMarker() {
+
+        if (isMapClickable && !markerSet) {
+            mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
+                @Override
+                public void onMapClick(@NonNull LatLng latLng) {
+                    if (!markerSet) {
+                        addNewMarker(latLng);
+                    }
+                }
+            });
+        } else if (isMapLongClickable) {
+
+            if (longClickLocation == null) {
+                return;
+            }
+            addNewMarker(longClickLocation);
+            isMapLongClickable = false;
+
+        } else {
+            LatLng mLastLocationLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            addNewMarker(mLastLocationLatLng);
+        }
+    }
+
+    private void addNewMarker(LatLng location) {
+
+        final String date = new SimpleDateFormat("EEE, dd MMM yyyy").format(new Date());
+
+        Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+            city = addresses.get(0).getLocality();
+        }
+
+
+        LatLng latLngLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        mapView.addMarker(new MarkerOptions()
+                .position(latLngLocation)
+                .title(NewNoteActivity.title)
+                .snippet(NewNoteActivity.description + System.getProperty("line.separator") + date));
+
+        Note note = new Note(
+                NewNoteActivity.title,
+                NewNoteActivity.description,
+                date,
+                location.getLatitude(),
+                location.getLongitude());
+
+        note.setCity(city);
+        Snackbar.make(getView(), "Your note has been added.", Snackbar.LENGTH_LONG).show();
+        mNoteAdapter.add(note);
+        markerSet = true;
+    }
+
+    private void handleNewLocation(Location location) {
+
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
+        if (currentPositionMarker != null) {
+            mapView.removeMarker(currentPositionMarker);
+        }
+
+        IconFactory mIconFactory = IconFactory.getInstance(this.getContext());
+        Drawable mIconDrawable = ContextCompat.getDrawable(this.getContext(), R.drawable.ic_place_black_36dp);
+        Icon icon = mIconFactory.fromDrawable(mIconDrawable);
+
+        currentPositionMarker = mapView.addMarker(new MarkerOptions()
+                .icon(icon)
+                .position(latLng)
+                .title("You're here !"));
+    }
+
+    public void setPosition() {
+
+        if (seeNoteLocation) {
+            mapView.setLatLng(new LatLngZoom(seeNotePos, 7));
+            Log.d(TAG, "seeNoteLocation");
+        } else if (seeLongClickLocation) {
+            mapView.setLatLng(new LatLngZoom(longClickLocation, 7));
+            Log.d(TAG, "seeLongClickLocation");
+        } else {
+            //current location
+            mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
+            Log.d(TAG, "else");
+        }
+
+        seeNoteLocation = false;
+        seeLongClickLocation = false;
+        seeCurrentLocation = false;
+    }
+
+    @Override
+    public void onAllNotesLoaded(List<Note> notes) {
+
+        mNotes = notes;
+
+        for (Note note : mNotes) {
+            String title = note.getTitle();
+            String description = note.getDescription();
+            String date = note.getDate();
+            Double lat = note.getLat();
+            Double lng = note.getLng();
+
+            mapView.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title(title)
+                    .snippet(description + System.getProperty("line.separator") + date));
+        }
+    }
+
 
     @Override
     public void onStart() {
@@ -139,7 +270,8 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
         super.onResume();
         mapView.onResume();
         Log.d("onResume", locationLat + " " + locationLon);
-        mapView.setLatLng(new LatLngZoom(locationLat, locationLon, 7));
+
+        setPosition();
     }
 
     @Override
@@ -165,167 +297,4 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        Log.d(TAG, "onLocationChanged" + mLastLocation.toString());
-        handleNewLocation(location);
-    }
-
-    private void addMarker() {
-        final String date = new SimpleDateFormat("EEE, dd MMM yyyy").format(new Date());
-
-        if (isMapClickable) {
-
-            mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
-
-                @Override
-                public void onMapClick(@NonNull LatLng latLng) {
-
-                    Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
-                    List<Address> addresses = null;
-                    try {
-                        addresses = gcd.getFromLocation(latLng.getLatitude(), latLng.getLongitude(), 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (addresses.size() > 0) {
-                        Log.d(TAG, addresses.get(0).getLocality());
-                        city = addresses.get(0).getLocality();
-                    }
-
-                    Log.d(TAG, latLng.getLatitude() + " " + latLng.getLongitude());
-                    Log.d(TAG, NewNoteActivity.title);
-
-                    if (!markerSet) {
-                        mapView.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title(NewNoteActivity.title)
-                                .snippet(NewNoteActivity.description + System.getProperty("line.separator") + date));
-
-                        Note note = new Note(
-                                NewNoteActivity.title,
-                                NewNoteActivity.description,
-                                date,
-                                latLng.getLatitude(),
-                                latLng.getLongitude());
-                        note.setCity(city);
-                        mNoteAdapter.add(note);
-                        markerSet = true;
-                    }
-                }
-            });
-        } else {
-
-            Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = gcd.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (addresses.size() > 0) {
-                Log.d(TAG, addresses.get(0).getLocality());
-                city = addresses.get(0).getLocality();
-            }
-
-            Log.d(TAG, "on current location");
-
-            LatLng latLngLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-            mapView.addMarker(new MarkerOptions()
-                    .position(latLngLocation)
-                    .title(NewNoteActivity.title)
-                    .snippet(NewNoteActivity.description + System.getProperty("line.separator") + date ));
-
-            Note note = new Note(
-                    NewNoteActivity.title,
-                    NewNoteActivity.description,
-                    date,
-                    mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude());
-
-            note.setCity(city);
-
-            mNoteAdapter.add(note);
-            markerSet = true;
-
-        }
-    }
-
-    private void handleNewLocation(Location location) {
-
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
-
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-
-
-        if (currentPositionMarker != null) {
-            mapView.removeMarker(currentPositionMarker);
-        } else {
-            if (!seeNote) {
-                mapView.setLatLng(new LatLngZoom(currentLatitude, currentLongitude, 7));
-            }
-        }
-
-        IconFactory mIconFactory = IconFactory.getInstance(this.getContext());
-        Drawable mIconDrawable = ContextCompat.getDrawable(this.getContext(), R.drawable.ic_place);
-        Icon icon = mIconFactory.fromDrawable(mIconDrawable);
-
-        currentPositionMarker = mapView.addMarker(new MarkerOptions()
-                .icon(icon)
-                .position(latLng)
-                .title("You're here !"));
-    }
-
-    @Override
-    public void onAllNotesLoaded(List<Note> notes) {
-        // mapView.removeAllAnnotations();
-        mNotes = notes;
-        int i = 1;
-        for (Note note : mNotes) {
-            String title = note.getTitle();
-            String description = note.getDescription();
-            Log.d("the notes", note.getLat().toString());
-            Log.d("the notes", title);
-            Log.d("the notes", description);
-            Log.d("the notes", note.getLng().toString());
-            Log.d("the notes", note.getDate() + "");
-            String date = note.getDate();
-
-            Double lat = note.getLat();
-            Double lng = note.getLng();
-
-            Log.d("noteLatLng", i + " " + title);
-            Log.d("noteLatLng", lat + " " + lng);
-
-          /*  mapView.addMarker(new MarkerOptions()
-                    .position(new LatLng(0.5d * i, 3.8d * i))
-                    // .position(noteLatLng)
-                    .title(title)
-                    .snippet(description)); */
-
-            mapView.addMarker(new MarkerOptions()
-                    .position(new LatLng(lat, lng))
-                    // .position(noteLatLng)
-                    .title(title)
-                    .snippet(description + System.getProperty("line.separator") + date));
-
-            i++;
-
-            mapView.setLatLng(new LatLng(lat, lng));
-
-            //get each note and add the marker
-        }
-
-     /*   mapView.addMarker(new MarkerOptions()
-                .position(new LatLng(0.5d, 3.8d))
-                .title("title")
-                .snippet("description"  ));
-*/
-        //notifyDataSetChanged();
-    }
-
 }

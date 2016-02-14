@@ -3,18 +3,19 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_attachment"
+            android:id="@+id/navigation_item_list"
             android:checked="true"
-            android:icon="@drawable/ic_attachment"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="@string/list_of_notes" />
         <item
             android:id="@+id/navigation_item_location"
-            android:icon="@drawable/ic_place"
+            android:icon="@drawable/ic_place_black_36dp"
             android:title="@string/notes_on_the_map" />
     </group>
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/navigation_item_new_note"
             android:icon="@drawable/ic_emoticon"
             android:title="@string/add_new_note" />
     </group>

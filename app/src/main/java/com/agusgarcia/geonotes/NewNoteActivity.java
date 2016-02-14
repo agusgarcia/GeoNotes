@@ -32,7 +32,6 @@ public class NewNoteActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle("New note");
 
     }
@@ -45,13 +44,10 @@ public class NewNoteActivity extends AppCompatActivity {
         EditText editDescription = (EditText) findViewById(R.id.edit_description);
         description = editDescription.getText().toString();
 
-        /*
-        Log.d("new title", title);
-        Note note;
-        note = new Note("Title: " + title, "Description..........", "Date", "Location");
-        note.save();
-        */
-
+        if (MapFragment.isMapLongClickable) {
+            launchMapActivity();
+            return;
+        }
 
         chooseLocation();
     }
@@ -72,17 +68,15 @@ public class NewNoteActivity extends AppCompatActivity {
                                 isMapClickable = true;
                                 addNewMarker = true;
                                 Log.d("newM3", Boolean.toString(addNewMarker));
-                                Intent mapIntent = new Intent(NewNoteActivity.this, MapActivity.class);
-                                NewNoteActivity.this.startActivity(mapIntent);
-
+                                launchMapActivity();
 
                                 break;
                             case 1:
                                 Log.d("case", "Current location");
                                 isMapClickable = false;
                                 addNewMarker = true;
-                                Intent locIntent = new Intent(NewNoteActivity.this, MapActivity.class);
-                                NewNoteActivity.this.startActivity(locIntent);
+                                launchMapActivity();
+
                                 break;
                         }
 
@@ -91,6 +85,11 @@ public class NewNoteActivity extends AppCompatActivity {
                 })
                 .positiveText("Choose")
                 .show();
+    }
+
+    public void launchMapActivity() {
+        Intent intent = new Intent(NewNoteActivity.this, MapActivity.class);
+        NewNoteActivity.this.startActivity(intent);
     }
 
 

@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.agusgarcia.geonotes.Notes.Note;
 import com.orm.SugarContext;
 
-public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
@@ -58,11 +58,12 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
                 switch (id) {
                     case R.id.navigation_item_location:
-                        Log.d("TAG", "Map");
                         onButtonMapClick();
                         return true;
+                    case R.id.navigation_item_new_note:
+                        onButtonNewNoteClick();
+                        return true;
                 }
-
                 return true;
             }
         });
@@ -81,14 +82,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         });
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -115,17 +108,16 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
                 .commit();
     }
 
-    @Override
+
     public void onButtonMapClick() {
         Log.d(TAG, "Button Map Clicked");
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 
-    @Override
-    public void onButtonListClick() {
+    public void onButtonNewNoteClick() {
         Log.d(TAG, "Button List Clicked");
-        Intent intent = new Intent(this, ListActivity.class);
+        Intent intent = new Intent(this, NewNoteActivity.class);
         startActivity(intent);
     }
 
