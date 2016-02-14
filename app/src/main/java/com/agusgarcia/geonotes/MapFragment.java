@@ -178,7 +178,6 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             city = addresses.get(0).getLocality();
         }
 
-
         LatLng latLngLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         mapView.addMarker(new MarkerOptions()
@@ -194,7 +193,11 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
                 location.getLongitude());
 
         note.setCity(city);
-        Snackbar.make(getView(), "Your note has been added.", Snackbar.LENGTH_LONG).show();
+
+        if (getView() != null) {
+            Snackbar.make(getView(), "Your note has been added.", Snackbar.LENGTH_SHORT).show();
+        }
+
         mNoteAdapter.add(note);
         markerSet = true;
     }
