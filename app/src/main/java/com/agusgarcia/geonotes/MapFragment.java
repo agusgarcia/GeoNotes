@@ -143,7 +143,9 @@ public class MapFragment extends Fragment implements LocationListener, DataManag
             mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
                 @Override
                 public void onMapClick(@NonNull LatLng latLng) {
-                    addNewMarker(latLng);
+                    if (!markerSet) {
+                        addNewMarker(latLng);
+                    }
                 }
             });
         } else if (isMapLongClickable) {

@@ -30,6 +30,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     private static final String TAG = "Map Activity";
 
     protected GoogleApiClient mGoogleApiClient;
+    boolean enableGPS = false;
+    boolean enableInternet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
     @Override
     public void onResume() {
         super.onResume();
+
+        if(enableGPS || enableInternet) {
+            mGoogleApiClient.connect();
+            enableGPS = false;
+            enableInternet = false;
+        }
     }
 
     @Override
@@ -109,6 +117,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
+                            enableGPS = true;
                         }
                     })
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -139,6 +148,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.Co
 
                             Intent intent = new Intent(Settings.ACTION_SETTINGS);
                             startActivity(intent);
+                            enableInternet = true;
                         }
                     })
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
